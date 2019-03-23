@@ -9,7 +9,7 @@ ext {
     androidPluginVersion = '3.0.0'
 
     // Library
-    glideVersion = '4.1.1'
+    glideVersion = '4.9.0'
     gsonVersion = '2.7'
     okHttpVersion = '3.8.1'
     retrofitVersion = '2.5.0'

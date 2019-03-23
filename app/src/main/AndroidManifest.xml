@@ -13,11 +13,11 @@
         android:theme="@style/AppTheme">
 
         <activity
-            android:name=".ui.MainActivity"
+            android:name=".ui.main.MainActivity"
             android:label="@string/app_name" />
 
         <activity
-            android:name=".ui.SignInActivity"
+            android:name=".ui.signin.SignInActivity"
             android:label="@string/app_name"
             android:launchMode="singleTask">
 
@@ -40,22 +40,22 @@
         </activity>
 
         <activity
-            android:name=".ui.SearchActivity"
+            android:name=".ui.search.SearchActivity"
             android:label="@string/app_name"
-            android:parentActivityName=".ui.MainActivity">
+            android:parentActivityName=".ui.main.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="keonheelee.github.io.simplegithubapp.ui.MainActivity" />
+                android:value="keonheelee.github.io.simplegithubapp.ui.main.MainActivity" />
         </activity>
 
         <activity
-            android:name=".ui.RepositoryActivity"
+            android:name=".ui.repo.RepositoryActivity"
             android:label="@string/app_name"
-            android:parentActivityName=".ui.MainActivity">
+            android:parentActivityName=".ui.main.MainActivity">
 
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="keonheelee.github.io.simplegithubapp.ui.MainActivity"/>
+                android:value="keonheelee.github.io.simplegithubapp.ui.main.MainActivity"/>
         </activity>
     </application>
 </manifest>
