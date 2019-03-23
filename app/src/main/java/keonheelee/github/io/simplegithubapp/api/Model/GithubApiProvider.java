@@ -20,7 +20,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public final class GithubApiProvider {
 
     // 액세스 토큰 획득을 위한 객체 생성
-    public static AuthApi providerAuthApi(){
+    public static AuthApi provideAuthApi(){
         return new Retrofit.Builder()
                 .baseUrl("https://github.com/")
                 .client(provideOkHttpClient(provideLoggingInterceptor(), null))
@@ -30,7 +30,7 @@ public final class GithubApiProvider {
     }
 
     // 저장소 정보에 접근하기 위한 객체를 생성
-    public static GithubApi providerGithubApi(@NonNull Context context){
+    public static GithubApi provideGithubApi(@NonNull Context context){
         return new Retrofit.Builder()
                 .baseUrl("https://api.github.com/")
                 .client(provideOkHttpClient(provideLoggingInterceptor(),

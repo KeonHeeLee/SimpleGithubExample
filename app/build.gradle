@@ -50,4 +50,6 @@ dependencies {
 
     annotationProcessor "com.github.bumptech.glide:compiler:$glideVersion"
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+
+    annotationProcessor "com.github.bumptech.glide:compiler:$glideVersion"
 }

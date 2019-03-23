@@ -19,18 +19,18 @@ public final class GithubRepo {
     @SerializedName("updated_at")
     public final String updatedAt;
 
-    @SerializedName("stargers_count")
-    public final int starts;
+    @SerializedName("stargazers_count")
+    public final int stars;
 
     public GithubRepo(String name, String fullName,
                       GithubOwner owner, String description, String language,
-                      String updatedAt, int starts){
+                      String updatedAt, int stars){
         this.name = name;
         this.fullName = fullName;
         this.owner = owner;
         this.description = description;
         this.language = language;
         this.updatedAt = updatedAt;
-        this.starts = starts;
+        this.stars = stars;
     }
 }
