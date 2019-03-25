@@ -15,10 +15,11 @@ import java.util.ArrayList
 
 import keonheelee.github.io.simplegithubapp.R
 import keonheelee.github.io.simplegithubapp.ui.api.Model.GithubRepo
+import kotlinx.android.synthetic.main.item_repository.view.*
 
 class SearchAdapter : RecyclerView.Adapter<SearchAdapter.RepositoryHolder>() {
 
-    private var items: MutableList<GithubRepo> = ArrayList()
+    private var items: MutableList<GithubRepo> = mutableListOf()
     private val placeholder = ColorDrawable(Color.GRAY)
     private var listener: ItemClickListener? = null
 
@@ -27,22 +28,21 @@ class SearchAdapter : RecyclerView.Adapter<SearchAdapter.RepositoryHolder>() {
     }
 
     override fun onBindViewHolder(holder: RepositoryHolder, position: Int) {
-        val repo = items[position]
+        items[position].let { repo ->
+            with(holder.itemView) {
+                Glide.with(holder.itemView.context)
+                        .load(repo.owner.avartarUrl)
+                        .placeholder(placeholder)
+                        .into(holder.ivProfile)
 
-        Glide.with(holder.itemView.context)
-                .load(repo.owner.avartarUrl)
-                .placeholder(placeholder)
-                .into(holder.ivProfile)
+                tvItemRepositoryName.text = repo.fullName
+                tvItemRepositoryLanguage.text = if (TextUtils.isEmpty(repo.language))
+                    context.getText(R.string.no_language_specified)
+                else
+                    repo.language
 
-        holder.tvName.text = repo.fullName
-        holder.tvLanguage.text = if (TextUtils.isEmpty(repo.language))
-            holder.itemView.context.getText(R.string.no_language_specified)
-        else
-            repo.language
-
-        holder.itemView.setOnClickListener {
-            if (listener != null)
-                listener!!.onItemClick(repo)
+                setOnClickListener { listener?.onItemClick(repo) }
+            }
         }
     }
 

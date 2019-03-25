@@ -6,15 +6,13 @@ import android.os.Bundle
 import android.support.customtabs.CustomTabsIntent
 import android.support.v7.app.AppCompatActivity
 import android.view.View
-import android.widget.Button
-import android.widget.ProgressBar
 import android.widget.Toast
 
 import keonheelee.github.io.simplegithubapp.BuildConfig
 import keonheelee.github.io.simplegithubapp.R
 import keonheelee.github.io.simplegithubapp.ui.api.AuthApi
 import keonheelee.github.io.simplegithubapp.ui.api.Model.GithubAccessToken
-import keonheelee.github.io.simplegithubapp.ui.api.Model.GithubApiProvider
+import keonheelee.github.io.simplegithubapp.ui.api.Model.provideAuthApi
 import keonheelee.github.io.simplegithubapp.ui.data.AuthTokenProvider
 import keonheelee.github.io.simplegithubapp.ui.main.MainActivity
 import retrofit2.Call
@@ -22,12 +20,17 @@ import retrofit2.Callback
 import retrofit2.Response
 
 import kotlinx.android.synthetic.main.activity_sign_in.*
+import org.jetbrains.anko.clearTask
+import org.jetbrains.anko.intentFor
+import org.jetbrains.anko.longToast
+import org.jetbrains.anko.newTask
 
 class SignInActivity : AppCompatActivity() {
 
-    lateinit internal var api: AuthApi
-    lateinit internal var authTokenProvider: AuthTokenProvider
-    lateinit internal var accessTokenCall: Call<GithubAccessToken>
+    internal val api: AuthApi by lazy { provideAuthApi() }
+    internal val authTokenProvider
+            : AuthTokenProvider by lazy { AuthTokenProvider(this) }
+    internal var accessTokenCall: Call<GithubAccessToken>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,9 +53,6 @@ class SignInActivity : AppCompatActivity() {
             val intent = CustomTabsIntent.Builder().build()
             intent.launchUrl(this@SignInActivity, authUri)
         }
-
-        api = GithubApiProvider.provideAuthApi()
-        authTokenProvider = AuthTokenProvider(this)
 
         // 저장된 액세스 토큰이 있다면 메인 액티비티로 이동
         if (authTokenProvider.token != null)
@@ -78,7 +78,7 @@ class SignInActivity : AppCompatActivity() {
                 BuildConfig.GITHUB_CLIENT_ID, BuildConfig.GITHUB_CLIENT_SECRET, code)
 
         // 비동기 방식으로 액세스 토큰을 요청
-        accessTokenCall.enqueue(object : Callback<GithubAccessToken> {
+        accessTokenCall!!.enqueue(object : Callback<GithubAccessToken> {
             override fun onResponse(call: Call<GithubAccessToken>,
                                     response: Response<GithubAccessToken>) {
                 hideProgress()
@@ -115,13 +115,15 @@ class SignInActivity : AppCompatActivity() {
     }
 
     private fun showError(throwable: Throwable) {
-        Toast.makeText(this, throwable.message, Toast.LENGTH_LONG).show()
+        longToast(throwable.message ?: "No message available")
     }
 
     private fun launchMainActivity() {
-        startActivity(Intent(
-                this@SignInActivity, MainActivity::class.java)
-                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
-                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+        startActivity(intentFor<MainActivity>().clearTask().newTask())
+    }
+
+    override fun onStop(){
+        super.onStop()
+        accessTokenCall?.run{ cancel() }
     }
 }

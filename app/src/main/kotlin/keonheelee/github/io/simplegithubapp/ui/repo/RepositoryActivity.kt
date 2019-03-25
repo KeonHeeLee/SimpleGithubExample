@@ -3,10 +3,6 @@ package keonheelee.github.io.simplegithubapp.ui.repo
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.View
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.ProgressBar
-import android.widget.TextView
 
 import com.bumptech.glide.Glide
 
@@ -16,8 +12,8 @@ import java.util.Locale
 
 import keonheelee.github.io.simplegithubapp.R
 import keonheelee.github.io.simplegithubapp.ui.api.GithubApi
-import keonheelee.github.io.simplegithubapp.ui.api.Model.GithubApiProvider
 import keonheelee.github.io.simplegithubapp.ui.api.Model.GithubRepo
+import keonheelee.github.io.simplegithubapp.ui.api.Model.provideGithubApi
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -25,22 +21,26 @@ import retrofit2.Response
 import kotlinx.android.synthetic.main.activity_repository.*;
 
 class RepositoryActivity : AppCompatActivity() {
-    lateinit internal var api: GithubApi
-    lateinit internal var repoCall: Call<GithubRepo>
+
+    companion object {
+        const val KEY_USER_LOGIN = "user_login"
+        const val KEY_REPO_NAME = "repo_name"
+    }
+
+    internal val api: GithubApi by lazy { provideGithubApi(this) }
+    internal var repoCall: Call<GithubRepo>? = null
 
     // REST API 응답에 포함된 날짜 및 시간 표시 형식
-    internal var dateFormatInResponse = SimpleDateFormat(
+    internal val dateFormatInResponse = SimpleDateFormat(
             "yyyy-MM-dd'HH:mm:ssX", Locale.getDefault())
 
     // 화면에서 사용자에게 보여줄 날짜 및 시간 표시 형식
-    internal var dateFormatToShow = SimpleDateFormat(
+    internal val dateFormatToShow = SimpleDateFormat(
             "yyyy-MM-dd HH:mm:ss", Locale.getDefault())
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_repository)
-
-        api = GithubApiProvider.provideGithubApi(this)
 
         // 액티비티 호출 시 전달받은 사용자 이름과 저장소 이름을 추출
         val login = intent.getStringExtra(KEY_USER_LOGIN)
@@ -55,7 +55,7 @@ class RepositoryActivity : AppCompatActivity() {
         showProgress()
 
         repoCall = api.getRepository(login, repoName)
-        repoCall.enqueue(object : Callback<GithubRepo> {
+        repoCall!!.enqueue(object : Callback<GithubRepo> {
             override fun onResponse(call: Call<GithubRepo>, response: Response<GithubRepo>) {
                 hideProgress(true)
 
@@ -111,12 +111,14 @@ class RepositoryActivity : AppCompatActivity() {
     }
 
     private fun showError(message: String?) {
-        tvActivityRepositoryMessage.text = message ?: "Unexpected error."
-        tvActivityRepositoryMessage.visibility = View.VISIBLE
+        with(tvActivityRepositoryMessage){
+            text = message ?: "Unexpected error."
+            visibility = View.VISIBLE
+        }
     }
 
-    companion object {
-        val KEY_USER_LOGIN = "user_login"
-        val KEY_REPO_NAME = "repo_name"
+    override fun onStop(){
+        super.onStop()
+        repoCall?.run { cancel() }
     }
 }
