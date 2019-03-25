@@ -21,10 +21,10 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
+import kotlinx.android.synthetic.main.activity_sign_in.*
+
 class SignInActivity : AppCompatActivity() {
 
-    lateinit internal var btnStart: Button
-    lateinit internal var progress: ProgressBar
     lateinit internal var api: AuthApi
     lateinit internal var authTokenProvider: AuthTokenProvider
     lateinit internal var accessTokenCall: Call<GithubAccessToken>
@@ -33,10 +33,7 @@ class SignInActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sign_in)
 
-        btnStart = findViewById(R.id.btnActivityMainSearch)
-        progress = findViewById(R.id.pbActivitySignIn)
-
-        btnStart.setOnClickListener {
+        btnActivitySignInStart.setOnClickListener {
             // 사용자 인증을 처리하는 URL을 구성
             // 형식: https://github.com/login/oauth/
             //       authorize?client_id={어플리케이션의 Client ID}
@@ -108,13 +105,13 @@ class SignInActivity : AppCompatActivity() {
 
 
     private fun showProgress() {
-        btnStart.visibility = View.GONE
-        progress.visibility = View.VISIBLE
+        btnActivitySignInStart.visibility = View.GONE
+        pbActivitySignIn.visibility = View.VISIBLE
     }
 
     private fun hideProgress() {
-        btnStart.visibility = View.VISIBLE
-        progress.visibility = View.GONE
+        btnActivitySignInStart.visibility = View.VISIBLE
+        pbActivitySignIn.visibility = View.GONE
     }
 
     private fun showError(throwable: Throwable) {

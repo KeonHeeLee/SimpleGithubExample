@@ -22,16 +22,9 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
+import kotlinx.android.synthetic.main.activity_repository.*;
+
 class RepositoryActivity : AppCompatActivity() {
-    lateinit internal var llContent: LinearLayout
-    lateinit internal var ivProfile: ImageView
-    lateinit internal var tvName: TextView
-    lateinit internal var tvStars: TextView
-    lateinit internal var tvDescription: TextView
-    lateinit internal var tvLanguage: TextView
-    lateinit internal var tvLastUpdate: TextView
-    lateinit internal var pbProgress: ProgressBar
-    lateinit internal var tvMessage: TextView
     lateinit internal var api: GithubApi
     lateinit internal var repoCall: Call<GithubRepo>
 
@@ -46,16 +39,6 @@ class RepositoryActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_repository)
-
-        llContent = findViewById(R.id.llActivityRepositoryContent)
-        ivProfile = findViewById(R.id.ivActivityRepositoryProfile)
-        tvName = findViewById(R.id.tvActivityRepositoryName)
-        tvStars = findViewById(R.id.tvActivityRepositoryStars)
-        tvDescription = findViewById(R.id.tvActivityRepositoryDescription)
-        tvLanguage = findViewById(R.id.tvActivityRepositoryLanguage)
-        tvLastUpdate = findViewById(R.id.tvActivityRepositoryLastUpdate)
-        pbProgress = findViewById(R.id.pbActivityRepository)
-        tvMessage = findViewById(R.id.tvActivityRepositoryMessage)
 
         api = GithubApiProvider.provideGithubApi(this)
 
@@ -81,28 +64,28 @@ class RepositoryActivity : AppCompatActivity() {
                     // 저장소 소유자의 프로필 사진을 표시합니다.
                     Glide.with(this@RepositoryActivity)
                             .load(repo.owner.avartarUrl)
-                            .into(ivProfile)
+                            .into(ivActivityRepositoryProfile)
 
                     // 저장소 정보를 표시
-                    tvName.text = repo.fullName
-                    tvStars.text = resources
+                    tvActivityRepositoryName.text = repo.fullName
+                    tvActivityRepositoryStars.text = resources
                             .getQuantityString(R.plurals.star, repo.stars, repo.stars)
                     if (null == repo.description) {
-                        tvDescription.setText(R.string.no_description_provided)
+                        tvActivityRepositoryDescription.setText(R.string.no_description_provided)
                     } else {
-                        tvDescription.text = repo.description
+                        tvActivityRepositoryDescription.text = repo.description
                     }
                     if (null == repo.language) {
-                        tvLanguage.setText(R.string.no_language_specified)
+                        tvActivityRepositoryLanguage.setText(R.string.no_language_specified)
                     } else {
-                        tvLanguage.text = repo.language
+                        tvActivityRepositoryLanguage.text = repo.language
                     }
 
                     try {
                         val lastUpdate = dateFormatInResponse.parse(repo.updatedAt)
-                        tvLastUpdate.text = dateFormatToShow.format(lastUpdate)
+                        tvActivityRepositoryLastUpdate.text = dateFormatToShow.format(lastUpdate)
                     } catch (e: ParseException) {
-                        tvLastUpdate.text = getString(R.string.unknown)
+                        tvActivityRepositoryLastUpdate.text = getString(R.string.unknown)
                     }
 
                 } else {
@@ -118,18 +101,18 @@ class RepositoryActivity : AppCompatActivity() {
     }
 
     private fun showProgress() {
-        llContent.visibility = View.GONE
-        pbProgress.visibility = View.VISIBLE
+        llActivityRepositoryContent.visibility = View.GONE
+        pbActivityRepository.visibility = View.VISIBLE
     }
 
     private fun hideProgress(isSucceed: Boolean) {
-        llContent.visibility = if (isSucceed) View.VISIBLE else View.GONE
-        pbProgress.visibility = View.GONE
+        llActivityRepositoryContent.visibility = if (isSucceed) View.VISIBLE else View.GONE
+        pbActivityRepository.visibility = View.GONE
     }
 
     private fun showError(message: String?) {
-        tvMessage.text = message ?: "Unexpected error."
-        tvMessage.visibility = View.VISIBLE
+        tvActivityRepositoryMessage.text = message ?: "Unexpected error."
+        tvActivityRepositoryMessage.visibility = View.VISIBLE
     }
 
     companion object {
