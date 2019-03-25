@@ -3,8 +3,11 @@
 SimpleGithubExample with Kotlin in android. This repository refer a book;kunny's kotlin.
 
 ## Library
-- Android Support Library
-- Glide
-- Gson
-- OkHttp
-- Retrofit
+- [x] Android Support Library
+- [x] Glide
+- [x] Gson
+- [x] OkHttp
+- [x] Retrofit
+- [x] Kotlin Extensions
+- [x] Anko
+- [ ] RxJava
