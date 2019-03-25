@@ -10,4 +10,6 @@ SimpleGithubExample with Kotlin in android. This repository refer a book;kunny's
 - [x] Retrofit
 - [x] Kotlin Extensions
 - [x] Anko
-- [ ] RxJava
+- [x] RxJava
+- [x] RxAndroid
+- [x] RxBinding
