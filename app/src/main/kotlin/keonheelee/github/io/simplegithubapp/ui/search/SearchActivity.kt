@@ -2,8 +2,6 @@ package keonheelee.github.io.simplegithubapp.ui.search
 
 import android.content.Intent
 import android.os.Bundle
-import android.support.annotation.NonNull
-import android.support.v7.app.ActionBar
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -16,10 +14,10 @@ import android.widget.SearchView
 import android.widget.TextView
 
 import keonheelee.github.io.simplegithubapp.R
-import keonheelee.github.io.simplegithubapp.api.GithubApi
-import keonheelee.github.io.simplegithubapp.api.Model.GithubApiProvider
-import keonheelee.github.io.simplegithubapp.api.Model.GithubRepo
-import keonheelee.github.io.simplegithubapp.api.Model.RepoSearchResponse
+import keonheelee.github.io.simplegithubapp.ui.api.GithubApi
+import keonheelee.github.io.simplegithubapp.ui.api.Model.GithubApiProvider
+import keonheelee.github.io.simplegithubapp.ui.api.Model.GithubRepo
+import keonheelee.github.io.simplegithubapp.ui.api.Model.RepoSearchResponse
 import keonheelee.github.io.simplegithubapp.ui.repo.RepositoryActivity
 import retrofit2.Call
 import retrofit2.Callback

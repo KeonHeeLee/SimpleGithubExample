@@ -12,10 +12,10 @@ import android.widget.Toast
 
 import keonheelee.github.io.simplegithubapp.BuildConfig
 import keonheelee.github.io.simplegithubapp.R
-import keonheelee.github.io.simplegithubapp.api.AuthApi
-import keonheelee.github.io.simplegithubapp.api.Model.GithubAccessToken
-import keonheelee.github.io.simplegithubapp.api.Model.GithubApiProvider
-import keonheelee.github.io.simplegithubapp.data.AuthTokenProvider
+import keonheelee.github.io.simplegithubapp.ui.api.AuthApi
+import keonheelee.github.io.simplegithubapp.ui.api.Model.GithubAccessToken
+import keonheelee.github.io.simplegithubapp.ui.api.Model.GithubApiProvider
+import keonheelee.github.io.simplegithubapp.ui.data.AuthTokenProvider
 import keonheelee.github.io.simplegithubapp.ui.main.MainActivity
 import retrofit2.Call
 import retrofit2.Callback

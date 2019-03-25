@@ -12,13 +12,12 @@ import com.bumptech.glide.Glide
 
 import java.text.ParseException
 import java.text.SimpleDateFormat
-import java.util.Date
 import java.util.Locale
 
 import keonheelee.github.io.simplegithubapp.R
-import keonheelee.github.io.simplegithubapp.api.GithubApi
-import keonheelee.github.io.simplegithubapp.api.Model.GithubApiProvider
-import keonheelee.github.io.simplegithubapp.api.Model.GithubRepo
+import keonheelee.github.io.simplegithubapp.ui.api.GithubApi
+import keonheelee.github.io.simplegithubapp.ui.api.Model.GithubApiProvider
+import keonheelee.github.io.simplegithubapp.ui.api.Model.GithubRepo
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response

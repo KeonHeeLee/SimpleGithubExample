@@ -5,7 +5,6 @@ import android.graphics.drawable.ColorDrawable
 import android.support.v7.widget.RecyclerView
 import android.text.TextUtils
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
@@ -15,7 +14,7 @@ import com.bumptech.glide.Glide
 import java.util.ArrayList
 
 import keonheelee.github.io.simplegithubapp.R
-import keonheelee.github.io.simplegithubapp.api.Model.GithubRepo
+import keonheelee.github.io.simplegithubapp.ui.api.Model.GithubRepo
 
 class SearchAdapter : RecyclerView.Adapter<SearchAdapter.RepositoryHolder>() {
 
@@ -51,8 +50,8 @@ class SearchAdapter : RecyclerView.Adapter<SearchAdapter.RepositoryHolder>() {
         return items.size
     }
 
-    fun setItems(items: MutableList<GithubRepo>) {
-        this.items = items
+    fun setItems(items: List<GithubRepo>) {
+        this.items = items.toMutableList()
     }
 
     fun setItemClickListener(listener: ItemClickListener?) {
