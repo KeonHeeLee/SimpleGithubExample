@@ -1,0 +1,82 @@
+package keonheelee.github.io.simplegithubapp.ui.api.Model
+
+import android.content.Context
+
+import java.io.IOException
+
+import keonheelee.github.io.simplegithubapp.ui.api.AuthApi
+import keonheelee.github.io.simplegithubapp.ui.api.GithubApi
+import keonheelee.github.io.simplegithubapp.ui.data.AuthTokenProvider
+import okhttp3.Interceptor
+import okhttp3.OkHttpClient
+import okhttp3.Response
+import okhttp3.logging.HttpLoggingInterceptor
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+
+// 액세스 토큰 획득을 위한 객체 생성
+fun provideAuthApi(): AuthApi
+    = Retrofit.Builder()
+            .baseUrl("https://github.com/")
+            .client(provideOkHttpClient(provideLoggingInterceptor(), null))
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(AuthApi::class.java)
+
+
+// 저장소 정보에 접근하기 위한 객체를 생성
+fun provideGithubApi(context: Context): GithubApi
+        = Retrofit.Builder()
+            .baseUrl("https://api.github.com/")
+            .client(provideOkHttpClient(provideLoggingInterceptor(),
+                    provideAuthInterceptor(provideAuthTokenProvider(context))))
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(GithubApi::class.java)
+
+
+// 네트워크 통신에 사용할 클라이언트 객체 생성
+private fun provideOkHttpClient(
+        interceptor: HttpLoggingInterceptor,
+        authInterceptor: AuthInterceptor?): OkHttpClient
+    = OkHttpClient.Builder()
+        .run {
+            if (authInterceptor != null) {
+                // 매 요청의 헤더에 액세스 토큰 정보 추가
+                addInterceptor(authInterceptor)
+            }
+            // 이 클라이언트를 통해 오고 가는 네트워크 요청/응답을 로그로 표시하도록 함
+            addInterceptor(interceptor)
+            build()
+        }
+
+
+// 네트워크 요청/응답을 로그에 표시하는 Interceptor 객체를 생성
+private fun provideLoggingInterceptor(): HttpLoggingInterceptor
+        = HttpLoggingInterceptor().apply { level = HttpLoggingInterceptor.Level.BODY }
+
+// 액세스 토큰을 헤더에 추가하는 Interceptor 객체를 생성
+private fun provideAuthInterceptor(
+        provider: AuthTokenProvider): AuthInterceptor {
+    val token = provider.token ?: throw IllegalStateException("authToken cannot be null")
+
+    return AuthInterceptor(token)
+}
+
+private fun provideAuthTokenProvider(context: Context): AuthTokenProvider
+    = AuthTokenProvider(context.applicationContext)
+
+
+internal class AuthInterceptor(private val token: String) : Interceptor {
+
+    @Throws(IOException::class)
+    override fun intercept(chain: Interceptor.Chain)
+    // with() 함수와 run() 함수로 추가 변수 선언을 제거
+            : Response = with(chain){
+        val newRequest = request().newBuilder().run{
+            addHeader("Authorization", "token " + token)
+            build()
+        }
+        proceed(newRequest)
+    }
+}
