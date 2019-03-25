@@ -11,10 +11,9 @@ import android.widget.TextView
 
 import com.bumptech.glide.Glide
 
-import java.util.ArrayList
 
 import keonheelee.github.io.simplegithubapp.R
-import keonheelee.github.io.simplegithubapp.ui.api.Model.GithubRepo
+import keonheelee.github.io.simplegithubapp.api.Model.GithubRepo
 import kotlinx.android.synthetic.main.item_repository.view.*
 
 class SearchAdapter : RecyclerView.Adapter<SearchAdapter.RepositoryHolder>() {
