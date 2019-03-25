@@ -1,4 +1,7 @@
 ext {
+    // Kotlin Version
+    kotlinVersion ='1.3.21'
+
     // Build configuration
     buildToolsVersion = '27.0.1'
     minSdkVersion = 15

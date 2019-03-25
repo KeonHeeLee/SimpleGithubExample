@@ -1,6 +1,7 @@
 apply plugin: 'com.android.application'
 
 apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
 
 android {
     compileSdkVersion 27
@@ -49,7 +50,7 @@ dependencies {
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 
     annotationProcessor "com.github.bumptech.glide:compiler:$glideVersion"
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 
-    annotationProcessor "com.github.bumptech.glide:compiler:$glideVersion"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
+    kapt "com.github.bumptech.glide:compiler:$glideVersion"
 }
