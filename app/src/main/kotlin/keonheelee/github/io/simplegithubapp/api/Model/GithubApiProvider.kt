@@ -1,38 +1,41 @@
-package keonheelee.github.io.simplegithubapp.ui.api.Model
+package keonheelee.github.io.simplegithubapp.api.Model
 
 import android.content.Context
+import keonheelee.github.io.simplegithubapp.api.AuthApi
+import keonheelee.github.io.simplegithubapp.api.GithubApi
 
 import java.io.IOException
 
-import keonheelee.github.io.simplegithubapp.ui.api.AuthApi
-import keonheelee.github.io.simplegithubapp.ui.api.GithubApi
 import keonheelee.github.io.simplegithubapp.ui.data.AuthTokenProvider
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Response
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 
 // 액세스 토큰 획득을 위한 객체 생성
 fun provideAuthApi(): AuthApi
-    = Retrofit.Builder()
-            .baseUrl("https://github.com/")
-            .client(provideOkHttpClient(provideLoggingInterceptor(), null))
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-            .create(AuthApi::class.java)
+        = Retrofit.Builder()
+        .baseUrl("https://github.com/")
+        .client(provideOkHttpClient(provideLoggingInterceptor(), null))
+        .addCallAdapterFactory(RxJava2CallAdapterFactory.createAsync())
+        .addConverterFactory(GsonConverterFactory.create())
+        .build()
+        .create(AuthApi::class.java)
 
 
 // 저장소 정보에 접근하기 위한 객체를 생성
 fun provideGithubApi(context: Context): GithubApi
         = Retrofit.Builder()
-            .baseUrl("https://api.github.com/")
-            .client(provideOkHttpClient(provideLoggingInterceptor(),
-                    provideAuthInterceptor(provideAuthTokenProvider(context))))
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-            .create(GithubApi::class.java)
+        .baseUrl("https://api.github.com/")
+        .client(provideOkHttpClient(provideLoggingInterceptor(),
+                provideAuthInterceptor(provideAuthTokenProvider(context))))
+        .addCallAdapterFactory(RxJava2CallAdapterFactory.createAsync())
+        .addConverterFactory(GsonConverterFactory.create())
+        .build()
+        .create(GithubApi::class.java)
 
 
 // 네트워크 통신에 사용할 클라이언트 객체 생성

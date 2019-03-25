@@ -1,6 +1,7 @@
-package keonheelee.github.io.simplegithubapp.ui.api.Model
+package keonheelee.github.io.simplegithubapp.api.Model
 
 import com.google.gson.annotations.SerializedName
+import keonheelee.github.io.simplegithubapp.ui.api.Model.GithubOwner
 
 class GithubRepo(
         val name: String,

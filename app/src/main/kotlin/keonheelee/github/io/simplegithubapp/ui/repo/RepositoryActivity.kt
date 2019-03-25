@@ -5,18 +5,17 @@ import android.support.v7.app.AppCompatActivity
 import android.view.View
 
 import com.bumptech.glide.Glide
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
 
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.Locale
 
 import keonheelee.github.io.simplegithubapp.R
-import keonheelee.github.io.simplegithubapp.ui.api.GithubApi
-import keonheelee.github.io.simplegithubapp.ui.api.Model.GithubRepo
-import keonheelee.github.io.simplegithubapp.ui.api.Model.provideGithubApi
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import keonheelee.github.io.simplegithubapp.api.GithubApi
+import keonheelee.github.io.simplegithubapp.api.Model.provideGithubApi
+import keonheelee.github.io.simplegithubapp.plusAssign
 
 import kotlinx.android.synthetic.main.activity_repository.*;
 
@@ -28,7 +27,8 @@ class RepositoryActivity : AppCompatActivity() {
     }
 
     internal val api: GithubApi by lazy { provideGithubApi(this) }
-    internal var repoCall: Call<GithubRepo>? = null
+    // internal var repoCall: Call<GithubRepo>? = null
+    internal val disposables = CompositeDisposable()
 
     // REST API 응답에 포함된 날짜 및 시간 표시 형식
     internal val dateFormatInResponse = SimpleDateFormat(
@@ -52,52 +52,41 @@ class RepositoryActivity : AppCompatActivity() {
     }
 
     private fun showRepositoryInfo(login: String, repoName: String) {
-        showProgress()
 
-        repoCall = api.getRepository(login, repoName)
-        repoCall!!.enqueue(object : Callback<GithubRepo> {
-            override fun onResponse(call: Call<GithubRepo>, response: Response<GithubRepo>) {
-                hideProgress(true)
-
-                val repo = response.body()
-                if (response.isSuccessful && repo != null) {
-                    // 저장소 소유자의 프로필 사진을 표시합니다.
+        // REST API를 통해 저장소 정보를 요청
+        disposables += api.getRepository(login, repoName)
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe { showProgress() }
+                .doOnError { hideProgress(false) }
+                .doOnComplete { hideProgress(true) }
+                .subscribe({ repo->
                     Glide.with(this@RepositoryActivity)
                             .load(repo.owner.avartarUrl)
                             .into(ivActivityRepositoryProfile)
 
-                    // 저장소 정보를 표시
                     tvActivityRepositoryName.text = repo.fullName
                     tvActivityRepositoryStars.text = resources
                             .getQuantityString(R.plurals.star, repo.stars, repo.stars)
-                    if (null == repo.description) {
+                    if(repo.description == null)
                         tvActivityRepositoryDescription.setText(R.string.no_description_provided)
-                    } else {
+                    else
                         tvActivityRepositoryDescription.text = repo.description
-                    }
-                    if (null == repo.language) {
-                        tvActivityRepositoryLanguage.setText(R.string.no_language_specified)
-                    } else {
-                        tvActivityRepositoryLanguage.text = repo.language
-                    }
 
-                    try {
+                    if(repo.language == null)
+                        tvActivityRepositoryLanguage.setText(R.string.no_language_specified)
+                    else
+                        tvActivityRepositoryLanguage.text = repo.description
+
+                    try{
                         val lastUpdate = dateFormatInResponse.parse(repo.updatedAt)
-                        tvActivityRepositoryLastUpdate.text = dateFormatToShow.format(lastUpdate)
+                        tvActivityRepositoryLastUpdate.text =
+                                dateFormatToShow.format(lastUpdate)
                     } catch (e: ParseException) {
                         tvActivityRepositoryLastUpdate.text = getString(R.string.unknown)
                     }
-
-                } else {
-                    showError("Not successful: " + response.message())
+                }){
+                    showError(it.message)
                 }
-            }
-
-            override fun onFailure(call: Call<GithubRepo>, t: Throwable) {
-                hideProgress(false)
-                showError(t.message)
-            }
-        })
     }
 
     private fun showProgress() {
@@ -119,6 +108,7 @@ class RepositoryActivity : AppCompatActivity() {
 
     override fun onStop(){
         super.onStop()
-        repoCall?.run { cancel() }
+        //repoCall?.run { cancel() }
+        disposables.clear()
     }
 }

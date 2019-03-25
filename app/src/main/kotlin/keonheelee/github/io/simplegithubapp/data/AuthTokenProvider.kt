@@ -1,4 +1,4 @@
-package keonheelee.github.io.simplegithubapp.ui.data
+package keonheelee.github.io.simplegithubapp.data
 
 import android.content.Context
 import android.preference.PreferenceManager
