@@ -8,11 +8,10 @@ import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.SearchView
-import com.jakewharton.rxbinding2.widget.RxSearchView
 import com.jakewharton.rxbinding2.widget.queryTextChangeEvents
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.CompositeDisposable
+import keonheelee.github.io.simplegithubapp.AutoClearedDisposable
 
 import keonheelee.github.io.simplegithubapp.R
 import keonheelee.github.io.simplegithubapp.api.GithubApi
@@ -36,13 +35,18 @@ class SearchActivity : AppCompatActivity(), SearchAdapter.ItemClickListener {
     internal val api: GithubApi by lazy { provideGithubApi(this) }
     // 여러 디스포저블 객체를 관리할 수 있는 CompositeDiposable 객체를 초기화
     // internal var searchCall: Call<RepoSearchResponse>? = null
-    internal val disposables = CompositeDisposable()
+    internal val disposables = AutoClearedDisposable(this)
 
-    internal val viewDisposable = CompositeDisposable()
+    internal val viewDisposables = AutoClearedDisposable(
+            lifecycleOwner = this, alwaysClearOnStop = false)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
+
+        // Lifecycle.addObserver() 함수를 사용하여 각 객체를 옵서버로 등록
+        lifecycle += disposables
+        lifecycle += viewDisposables
 
         // 검색 결과를 표시할 어댑터를 리사이클러뷰에 설정
         adapter.setItemClickListener(this)
@@ -61,7 +65,7 @@ class SearchActivity : AppCompatActivity(), SearchAdapter.ItemClickListener {
         searchView = (menuSearch.actionView as SearchView)
 
         // SearchView에서 발생하는 이벤트를 옵서버블 형태로 받음
-        viewDisposable += searchView.queryTextChangeEvents()
+        viewDisposables += searchView.queryTextChangeEvents()
                 // 검색을 수행했을 때 발생한 이벤트만 받음
                 .filter { it.isSubmitted }
                 // 이벤트에서 검색어 텍스트(CharSequence)를 추출
@@ -189,17 +193,5 @@ class SearchActivity : AppCompatActivity(), SearchAdapter.ItemClickListener {
             text = ""
             visibility = View.GONE
         }
-    }
-
-    override fun onStop(){
-        super.onStop()
-        // searchCall?.run { cancel() }
-        disposables.clear()
-
-        // 액티비티가 완전히 종료되고 있는 경우에만 관리하고 있는 디스포저블을 해제
-        // 화면이 꺼지거나 다른 액티비티를 호출하여 액티비티가 화면에서 사라지는 경우에는
-        // 해제하지 않음
-        if(isFinishing)
-            viewDisposable.clear()
     }
 }

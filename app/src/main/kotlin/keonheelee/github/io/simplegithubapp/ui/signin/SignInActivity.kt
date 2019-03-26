@@ -7,7 +7,7 @@ import android.support.customtabs.CustomTabsIntent
 import android.support.v7.app.AppCompatActivity
 import android.view.View
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.CompositeDisposable
+import keonheelee.github.io.simplegithubapp.AutoClearedDisposable
 
 import keonheelee.github.io.simplegithubapp.BuildConfig
 import keonheelee.github.io.simplegithubapp.R
@@ -29,11 +29,16 @@ class SignInActivity : AppCompatActivity() {
     internal val authTokenProvider
             : AuthTokenProvider by lazy { AuthTokenProvider(this) }
     // internal var accessTokenCall: Call<GithubAccessToken>? = null
-    internal val disposable = CompositeDisposable()
+    // internal val disposables = CompositeDisposable()
+    internal val disposables = AutoClearedDisposable(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sign_in)
+
+        // Lifecycle.addObserver() 함수를 사용하여
+        // AutoClearedDisposable 객체를 옵서버로 등록
+        lifecycle += disposables
 
         btnActivitySignInStart.setOnClickListener {
             // 사용자 인증을 처리하는 URL을 구성
@@ -72,7 +77,7 @@ class SignInActivity : AppCompatActivity() {
     private fun getAccessToken(code: String) {
         // 비동기 방식으로 액세스 토큰을 요청
         // 액세스 토큰을 요청하는 REST API
-        disposable += api.getAccessToken(
+        disposables += api.getAccessToken(
                 BuildConfig.GITHUB_CLIENT_ID, BuildConfig.GITHUB_CLIENT_SECRET, code)
                 // REST API를 통해 받은 응답에서 액세스 토큰만 추출
                 .map { it.accessToken }
@@ -118,11 +123,5 @@ class SignInActivity : AppCompatActivity() {
 
     private fun launchMainActivity() {
         startActivity(intentFor<MainActivity>().clearTask().newTask())
-    }
-
-    override fun onStop(){
-        super.onStop()
-        //accessTokenCall?.run{ cancel() }
-        disposable.clear()
     }
 }

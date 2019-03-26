@@ -6,7 +6,7 @@ import android.view.View
 
 import com.bumptech.glide.Glide
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.CompositeDisposable
+import keonheelee.github.io.simplegithubapp.AutoClearedDisposable
 
 import java.text.ParseException
 import java.text.SimpleDateFormat
@@ -28,7 +28,7 @@ class RepositoryActivity : AppCompatActivity() {
 
     internal val api: GithubApi by lazy { provideGithubApi(this) }
     // internal var repoCall: Call<GithubRepo>? = null
-    internal val disposables = CompositeDisposable()
+    internal val disposables = AutoClearedDisposable(this)
 
     // REST API 응답에 포함된 날짜 및 시간 표시 형식
     internal val dateFormatInResponse = SimpleDateFormat(
@@ -41,6 +41,8 @@ class RepositoryActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_repository)
+
+        lifecycle += disposables
 
         // 액티비티 호출 시 전달받은 사용자 이름과 저장소 이름을 추출
         val login = intent.getStringExtra(KEY_USER_LOGIN)
@@ -104,11 +106,5 @@ class RepositoryActivity : AppCompatActivity() {
             text = message ?: "Unexpected error."
             visibility = View.VISIBLE
         }
-    }
-
-    override fun onStop(){
-        super.onStop()
-        //repoCall?.run { cancel() }
-        disposables.clear()
     }
 }
