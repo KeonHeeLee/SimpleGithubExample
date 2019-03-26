@@ -9,15 +9,20 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.SearchView
 import com.jakewharton.rxbinding2.widget.queryTextChangeEvents
+import io.reactivex.Completable
 import io.reactivex.Observable
+import io.reactivex.Scheduler
 import io.reactivex.android.schedulers.AndroidSchedulers
-import keonheelee.github.io.simplegithubapp.AutoClearedDisposable
+import io.reactivex.schedulers.Schedulers
+import keonheelee.github.io.simplegithubapp.rx.AutoClearedDisposable
 
 import keonheelee.github.io.simplegithubapp.R
 import keonheelee.github.io.simplegithubapp.api.GithubApi
 import keonheelee.github.io.simplegithubapp.api.Model.GithubRepo
-import keonheelee.github.io.simplegithubapp.api.Model.provideGithubApi
-import keonheelee.github.io.simplegithubapp.plusAssign
+import keonheelee.github.io.simplegithubapp.api.provideGithubApi
+import keonheelee.github.io.simplegithubapp.data.provideSearchHistoryDao
+import keonheelee.github.io.simplegithubapp.extensions.plusAssign
+import keonheelee.github.io.simplegithubapp.extensions.runOnIoScheduler
 import keonheelee.github.io.simplegithubapp.ui.repo.RepositoryActivity
 
 import kotlinx.android.synthetic.main.activity_search.*
@@ -39,6 +44,9 @@ class SearchActivity : AppCompatActivity(), SearchAdapter.ItemClickListener {
 
     internal val viewDisposables = AutoClearedDisposable(
             lifecycleOwner = this, alwaysClearOnStop = false)
+
+    // SearchHistoryDao의 인스턴스를 받아옴
+    internal val searchHistoryDao by lazy { provideSearchHistoryDao(this) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -100,6 +108,12 @@ class SearchActivity : AppCompatActivity(), SearchAdapter.ItemClickListener {
     }
 
     override fun onItemClick(repository: GithubRepo) {
+        // 데이터베이스에 저장소를 추가
+        // 데이터 조작 코드를 메인 스레드에서 호출하면 에러가 발생하므로,
+        // RxJava의 Completable을 사용하여
+        // IO 스레드에서 데이터 추가 작업을 수행하도록 함
+        disposables += runOnIoScheduler { searchHistoryDao.add(repository) }
+
         // 검색 결과를 선택하면 자세한 정보를 표시하는 액티비티 실행
         startActivity<RepositoryActivity>(
                 RepositoryActivity.KEY_USER_LOGIN to repository.owner.login,

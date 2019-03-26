@@ -14,3 +14,4 @@ SimpleGithubExample with Kotlin in android. This repository refer a book;kunny's
 - [x] RxAndroid
 - [x] RxBinding
 - [x] Lifecycle
+- [x] Room

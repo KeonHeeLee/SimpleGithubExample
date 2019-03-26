@@ -1,4 +1,4 @@
-package keonheelee.github.io.simplegithubapp
+package keonheelee.github.io.simplegithubapp.rx
 
 import android.arch.lifecycle.Lifecycle
 import android.arch.lifecycle.LifecycleObserver

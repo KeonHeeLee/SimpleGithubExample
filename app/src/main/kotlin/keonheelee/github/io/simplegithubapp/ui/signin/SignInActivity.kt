@@ -7,14 +7,14 @@ import android.support.customtabs.CustomTabsIntent
 import android.support.v7.app.AppCompatActivity
 import android.view.View
 import io.reactivex.android.schedulers.AndroidSchedulers
-import keonheelee.github.io.simplegithubapp.AutoClearedDisposable
+import keonheelee.github.io.simplegithubapp.rx.AutoClearedDisposable
 
 import keonheelee.github.io.simplegithubapp.BuildConfig
 import keonheelee.github.io.simplegithubapp.R
 import keonheelee.github.io.simplegithubapp.api.AuthApi
-import keonheelee.github.io.simplegithubapp.api.Model.provideAuthApi
+import keonheelee.github.io.simplegithubapp.api.provideAuthApi
 import keonheelee.github.io.simplegithubapp.data.AuthTokenProvider
-import keonheelee.github.io.simplegithubapp.plusAssign
+import keonheelee.github.io.simplegithubapp.extensions.plusAssign
 import keonheelee.github.io.simplegithubapp.ui.main.MainActivity
 
 import kotlinx.android.synthetic.main.activity_sign_in.*

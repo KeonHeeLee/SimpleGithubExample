@@ -6,7 +6,7 @@ import android.view.View
 
 import com.bumptech.glide.Glide
 import io.reactivex.android.schedulers.AndroidSchedulers
-import keonheelee.github.io.simplegithubapp.AutoClearedDisposable
+import keonheelee.github.io.simplegithubapp.rx.AutoClearedDisposable
 
 import java.text.ParseException
 import java.text.SimpleDateFormat
@@ -14,8 +14,8 @@ import java.util.Locale
 
 import keonheelee.github.io.simplegithubapp.R
 import keonheelee.github.io.simplegithubapp.api.GithubApi
-import keonheelee.github.io.simplegithubapp.api.Model.provideGithubApi
-import keonheelee.github.io.simplegithubapp.plusAssign
+import keonheelee.github.io.simplegithubapp.api.provideGithubApi
+import keonheelee.github.io.simplegithubapp.extensions.plusAssign
 
 import kotlinx.android.synthetic.main.activity_repository.*;
 
