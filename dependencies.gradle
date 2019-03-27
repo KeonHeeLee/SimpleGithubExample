@@ -10,6 +10,7 @@ ext {
 
     // Gradle plugin
     androidPluginVersion = '3.0.0'
+    archComponentVersion = '1.1.1'
 
     // Library
     glideVersion = '4.9.0'

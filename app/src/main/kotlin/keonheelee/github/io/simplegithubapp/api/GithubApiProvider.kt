@@ -1,12 +1,10 @@
-package keonheelee.github.io.simplegithubapp.api.Model
+package keonheelee.github.io.simplegithubapp.api
 
 import android.content.Context
-import keonheelee.github.io.simplegithubapp.api.AuthApi
-import keonheelee.github.io.simplegithubapp.api.GithubApi
+import keonheelee.github.io.simplegithubapp.data.AuthTokenProvider
 
 import java.io.IOException
 
-import keonheelee.github.io.simplegithubapp.ui.data.AuthTokenProvider
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Response
