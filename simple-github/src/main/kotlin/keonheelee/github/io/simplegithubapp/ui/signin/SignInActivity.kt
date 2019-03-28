@@ -5,15 +5,14 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.support.customtabs.CustomTabsIntent
-import android.support.v7.app.AppCompatActivity
 import android.view.View
+import dagger.android.support.DaggerAppCompatActivity
 import io.reactivex.android.schedulers.AndroidSchedulers
 import keonheelee.github.io.simplegithubapp.rx.AutoClearedDisposable
 
 import keonheelee.github.io.simplegithubapp.BuildConfig
 import keonheelee.github.io.simplegithubapp.R
 import keonheelee.github.io.simplegithubapp.api.AuthApi
-import keonheelee.github.io.simplegithubapp.api.provideAuthApi
 import keonheelee.github.io.simplegithubapp.data.AuthTokenProvider
 import keonheelee.github.io.simplegithubapp.extensions.plusAssign
 import keonheelee.github.io.simplegithubapp.ui.main.MainActivity
@@ -23,12 +22,10 @@ import org.jetbrains.anko.clearTask
 import org.jetbrains.anko.intentFor
 import org.jetbrains.anko.longToast
 import org.jetbrains.anko.newTask
+import javax.inject.Inject
 
-class SignInActivity : AppCompatActivity() {
+class SignInActivity : DaggerAppCompatActivity() {
 
-    internal val api: AuthApi by lazy { provideAuthApi() }
-    internal val authTokenProvider
-            : AuthTokenProvider by lazy { AuthTokenProvider(this) }
     // internal var accessTokenCall: Call<GithubAccessToken>? = null
     // internal val disposables = CompositeDisposable()
     internal val disposables = AutoClearedDisposable(this)
@@ -37,10 +34,15 @@ class SignInActivity : AppCompatActivity() {
     internal val viewDisposables
             = AutoClearedDisposable(lifecycleOwner = this, alwaysClearOnStop = false)
 
+    // 대거를 통해 AuthApi 객체를 주입받는 프로퍼티를 선언
+    // @Inject 어노테이션을 추가해야 대거로부터 객체를 주입받을 수 있음
+    // 선언 시점에 프로퍼티를 초기화할 수 없으므로 lateinit var로 선언
+    @Inject lateinit var authApi: AuthApi
+
+    @Inject lateinit var authTokenProvider: AuthTokenProvider
+
     // SignInViewModel을 생성할 때 필요한 뷰모델 팩토리 클래스의 인스턴스를 생성
-    internal val viewModelFactory by lazy {
-        SignInViewModelFactory(provideAuthApi(), AuthTokenProvider(this))
-    }
+    @Inject lateinit var viewModelFactory: SignInViewModelFactory
 
     // 뷰모델 인스턴스는 onCreate()애서 받으므로, lateinit으로 선언
     lateinit var viewModel: SignInViewModel

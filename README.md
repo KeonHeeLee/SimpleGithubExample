@@ -15,3 +15,4 @@ SimpleGithubExample with Kotlin in android. This repository refer a book;kunny's
 - [x] RxBinding
 - [x] Lifecycle
 - [x] Room
+- [x] Dagger2

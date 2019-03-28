@@ -2,10 +2,10 @@ package keonheelee.github.io.simplegithubapp.ui.repo
 
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
 import android.view.View
 
 import com.bumptech.glide.Glide
+import dagger.android.support.DaggerAppCompatActivity
 import io.reactivex.android.schedulers.AndroidSchedulers
 import keonheelee.github.io.simplegithubapp.rx.AutoClearedDisposable
 
@@ -19,13 +19,16 @@ import keonheelee.github.io.simplegithubapp.api.provideGithubApi
 import keonheelee.github.io.simplegithubapp.extensions.plusAssign
 
 import kotlinx.android.synthetic.main.activity_repository.*;
+import javax.inject.Inject
 
-class RepositoryActivity : AppCompatActivity() {
+class RepositoryActivity : DaggerAppCompatActivity() {
 
     companion object {
         const val KEY_USER_LOGIN = "user_login"
         const val KEY_REPO_NAME = "repo_name"
     }
+
+    @Inject lateinit var githubApi: GithubApi
 
     internal val api: GithubApi by lazy { provideGithubApi(this) }
     // internal var repoCall: Call<GithubRepo>? = null
@@ -36,9 +39,7 @@ class RepositoryActivity : AppCompatActivity() {
             = AutoClearedDisposable(lifecycleOwner = this, alwaysClearOnStop = false)
 
     // RepositoryViewModel을 생성하기 위해 필요한 뷰모델 팩토리 클래스의 인스턴스를 생성
-    internal val viewModelFactory by lazy {
-        RepositoryViewModelFactory(provideGithubApi(this))
-    }
+    @Inject lateinit var viewModelFactory: RepositoryViewModelFactory
 
     // 뷰모델의 인스턴스는 onCreate()에서 받으므로, lateinit으로 선언
     lateinit var viewModel: RepositoryViewModel
