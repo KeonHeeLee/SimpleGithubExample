@@ -3,11 +3,7 @@ package keonheelee.github.io.simplegithubapp.api
 import android.content.Context
 import keonheelee.github.io.simplegithubapp.data.AuthTokenProvider
 
-import java.io.IOException
-
-import okhttp3.Interceptor
 import okhttp3.OkHttpClient
-import okhttp3.Response
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
@@ -66,18 +62,3 @@ private fun provideAuthInterceptor(
 
 private fun provideAuthTokenProvider(context: Context): AuthTokenProvider
     = AuthTokenProvider(context.applicationContext)
-
-
-internal class AuthInterceptor(private val token: String) : Interceptor {
-
-    @Throws(IOException::class)
-    override fun intercept(chain: Interceptor.Chain)
-    // with() 함수와 run() 함수로 추가 변수 선언을 제거
-            : Response = with(chain){
-        val newRequest = request().newBuilder().run{
-            addHeader("Authorization", "token " + token)
-            build()
-        }
-        proceed(newRequest)
-    }
-}

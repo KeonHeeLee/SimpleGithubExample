@@ -1,17 +1,18 @@
 package keonheelee.github.io.simplegithubapp.ui.main
 
 import android.arch.lifecycle.*
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import dagger.android.support.DaggerAppCompatActivity
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
 import keonheelee.github.io.simplegithubapp.R
 import keonheelee.github.io.simplegithubapp.api.Model.GithubRepo
+import keonheelee.github.io.simplegithubapp.data.SearchHistoryDao
 import keonheelee.github.io.simplegithubapp.data.provideSearchHistoryDao
 import keonheelee.github.io.simplegithubapp.extensions.plusAssign
 import keonheelee.github.io.simplegithubapp.rx.AutoActivatedDisposable
@@ -22,8 +23,9 @@ import keonheelee.github.io.simplegithubapp.ui.search.SearchAdapter
 
 import kotlinx.android.synthetic.main.activity_main.*
 import org.jetbrains.anko.startActivity
+import javax.inject.Inject
 
-class MainActivity : AppCompatActivity(), SearchAdapter.ItemClickListener {
+class MainActivity : DaggerAppCompatActivity(), SearchAdapter.ItemClickListener {
 
     // 어댑터 프로퍼티를 추가
     internal val adapter by lazy {
@@ -31,7 +33,7 @@ class MainActivity : AppCompatActivity(), SearchAdapter.ItemClickListener {
     }
 
     // 최근 조회한 저장소를 담당하는 데이터 접근 객체 프로퍼티를 추가
-    internal val searchHistoryDao by lazy { provideSearchHistoryDao(this) }
+    @Inject lateinit var searchHistoryDao: SearchHistoryDao
 
     // 디스포저블을 관리하는 프로퍼티를 추가
     internal val disposables = AutoClearedDisposable(this)
@@ -42,7 +44,7 @@ class MainActivity : AppCompatActivity(), SearchAdapter.ItemClickListener {
 
     // MainViewModel을 생성하기 위해 필요한 뷰모델 팩트뢰 클래스의 인스턴스를 생성
     internal val viewModelFactory
-            by lazy { MainViewModelFactory(provideSearchHistoryDao(this)) }
+            by lazy { MainViewModelFactory(searchHistoryDao) }
 
     // 뷰모델의 인스턴스는 onCreate()에서 받으므로, lateinit으로 선언
     lateinit var viewModel: MainViewModel
