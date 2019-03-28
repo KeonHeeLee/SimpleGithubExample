@@ -28,9 +28,7 @@ import javax.inject.Inject
 class MainActivity : DaggerAppCompatActivity(), SearchAdapter.ItemClickListener {
 
     // 어댑터 프로퍼티를 추가
-    internal val adapter by lazy {
-        SearchAdapter().apply { setItemClickListener(this@MainActivity) }
-    }
+    @Inject lateinit var adapter: SearchAdapter
 
     // 최근 조회한 저장소를 담당하는 데이터 접근 객체 프로퍼티를 추가
     @Inject lateinit var searchHistoryDao: SearchHistoryDao
@@ -43,8 +41,7 @@ class MainActivity : DaggerAppCompatActivity(), SearchAdapter.ItemClickListener 
             = AutoClearedDisposable(lifecycleOwner = this, alwaysClearOnStop = false)
 
     // MainViewModel을 생성하기 위해 필요한 뷰모델 팩트뢰 클래스의 인스턴스를 생성
-    internal val viewModelFactory
-            by lazy { MainViewModelFactory(searchHistoryDao) }
+    @Inject lateinit var viewModelFactory: MainViewModelFactory
 
     // 뷰모델의 인스턴스는 onCreate()에서 받으므로, lateinit으로 선언
     lateinit var viewModel: MainViewModel

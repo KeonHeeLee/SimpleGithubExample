@@ -39,9 +39,7 @@ class RepositoryActivity : DaggerAppCompatActivity() {
             = AutoClearedDisposable(lifecycleOwner = this, alwaysClearOnStop = false)
 
     // RepositoryViewModel을 생성하기 위해 필요한 뷰모델 팩토리 클래스의 인스턴스를 생성
-    internal val viewModelFactory by lazy {
-        RepositoryViewModelFactory(githubApi)
-    }
+    @Inject lateinit var viewModelFactory: RepositoryViewModelFactory
 
     // 뷰모델의 인스턴스는 onCreate()에서 받으므로, lateinit으로 선언
     lateinit var viewModel: RepositoryViewModel

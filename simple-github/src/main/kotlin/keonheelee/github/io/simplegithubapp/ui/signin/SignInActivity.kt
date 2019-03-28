@@ -42,10 +42,7 @@ class SignInActivity : DaggerAppCompatActivity() {
     @Inject lateinit var authTokenProvider: AuthTokenProvider
 
     // SignInViewModel을 생성할 때 필요한 뷰모델 팩토리 클래스의 인스턴스를 생성
-    internal val viewModelFactory by lazy {
-        SignInViewModelFactory(authApi, authTokenProvider)
-    }
-
+    @Inject lateinit var viewModelFactory: SignInViewModelFactory
 
     // 뷰모델 인스턴스는 onCreate()애서 받으므로, lateinit으로 선언
     lateinit var viewModel: SignInViewModel

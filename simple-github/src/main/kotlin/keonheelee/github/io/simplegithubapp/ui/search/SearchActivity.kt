@@ -30,8 +30,7 @@ class SearchActivity : DaggerAppCompatActivity(), SearchAdapter.ItemClickListene
     lateinit internal var menuSearch: MenuItem
     lateinit internal var searchView: SearchView
 
-    internal val adapter: SearchAdapter by lazy {
-        SearchAdapter().apply { setItemClickListener(this@SearchActivity) } }
+    @Inject lateinit var adapter: SearchAdapter
 
     internal val api: GithubApi by lazy { provideGithubApi(this) }
     // 여러 디스포저블 객체를 관리할 수 있는 CompositeDiposable 객체를 초기화
@@ -47,9 +46,7 @@ class SearchActivity : DaggerAppCompatActivity(), SearchAdapter.ItemClickListene
     @Inject lateinit var githubApi: GithubApi
 
     // SearchViewModel을 생성할 때 필요한 뷰모델 팩토리 클래스의 인스턴스를 생성
-    internal val viewModelFactory by lazy {
-        SearchViewModelFactory(githubApi, searchHistoryDao)
-    }
+    @Inject lateinit var viewModelFactory: SearchViewModelFactory
 
     lateinit var viewModel: SearchViewModel
 
