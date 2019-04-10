@@ -1,6 +1,6 @@
 # SimpleGithubExample
 
-SimpleGithubExample with Kotlin in android. This repository refer a book;kunny's kotlin.
+SimpleGithubExample with Kotlin in android.
 
 ## Library
 - [x] Android Support Library
